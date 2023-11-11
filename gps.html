@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Walking Animation</title>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+  </style>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcDPHtD2rNTs1ywvXr1Q3NO4RhMoUJpqc&callback=initMap&callback=initMap" async defer></script>
+  <script>
+    var map;
+    var personMarker;
+    var routeCoordinates = [
+      { lat: 40.7128, lng: -74.0060 }, // Starting point (New York, NY)
+      { lat: 34.0522, lng: -118.2437 } // Ending point (Los Angeles, CA)
+    ];
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: routeCoordinates[0] // Set the initial map center
+      });
+
+      // Create a Polyline to represent the route
+      var routePath = new google.maps.Polyline({
+        path: routeCoordinates,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
+
+      // Set the Polyline on the map
+      routePath.setMap(map);
+
+      // Create a marker for the person's current position
+      personMarker = new google.maps.Marker({
+        position: routeCoordinates[0], // Starting point
+        map: map,
+        icon: 'https://www.flaticon.com/svg/static/icons/svg/4140/4140048.svg' // Blue marker as a person
+      });
+
+      // Animate the person walking along the route
+      animatePerson(personMarker, routePath);
+    }
+
+    function animatePerson(marker, path) {
+      var speed = 90; // Adjust the speed of animation (milliseconds)
+      var i = 0;
+
+      function moveMarker() {
+        if (i < path.getPath().getArray().length) {
+          marker.setPosition(path.getPath().getArray()[i]);
+          i++;
+          setTimeout(moveMarker, speed);
+        }
+      }
+
+      moveMarker();
+    }
+  </script>
+</head>
+<body>
+  <div id="map"></div>
+</body>
+</html>
